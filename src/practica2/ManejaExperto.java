@@ -64,6 +64,51 @@ public class ManejaExperto {
             finalizaOperacion();
         }
     }
+    public void obtenNombresyEspecialidad() {
+        try {
+            inicioOperacion();
+            List expertos = sesion.createCriteria(Experto.class).list();
+            for (int i = 0; i < expertos.size(); i++) {
+                System.out.println("Nombre: " + ((Experto) expertos.get(i)).getNombre()
+                        + ", Especialidad: " + ((Experto) expertos.get(i)).getEspecialidad());
+            }
+        } catch (HibernateException he) {
+            throw he;
+        } finally {
+            finalizaOperacion();
+        }
+    }
+    public void listaConParametro(String keyword){
+        try {
+            inicioOperacion();
+            List expertos = sesion.createCriteria(Experto.class).add(Restrictions.like("especialidad",keyword)).list();
+            for (int i = 0; i < expertos.size(); i++) {
+                System.out.println("Nombre: " + ((Experto) expertos.get(i)).getNombre()
+                        + ", Especialidad: " + ((Experto) expertos.get(i)).getEspecialidad());
+            }
+        } catch (HibernateException he) {
+            throw he;
+        } finally {
+            finalizaOperacion();
+        }
+    }
+    public void obtenCasos(){
+        try {
+            inicioOperacion();
+                String queryString = "SELECT DISTINCT e.nombre, cp.nombre from caso_policial cp"
+                        +" INNER JOIN colabora c INNER JOIN experto e";
+                Query query = sesion.createSQLQuery(queryString);
+                List<Object[]> casos = query.list();
+                for(int i=0;i<casos.size();i++){
+            System.out.println("Nombre: "+casos.get(i)[0] + ", Caso: " + casos.get(i)[1]);
+                }
+            
+        } catch (HibernateException he) {
+            throw he;
+        } finally {
+            finalizaOperacion();
+        }
+    }
     public void finalizaOperacion(){
         tran.commit();
         sesion.close();
